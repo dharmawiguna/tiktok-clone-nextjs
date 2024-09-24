@@ -48,6 +48,19 @@ export interface PostWithProfile {
   };
 }
 
+export interface CommentWithProfile {
+  id: string;
+  user_id: string;
+  post_id: string;
+  text: string;
+  created_at: string;
+  profile: {
+    user_id: string;
+    name: string;
+    image: string;
+  };
+}
+
 export interface PostMainCompType {
   post: PostWithProfile;
 }
@@ -87,6 +100,24 @@ export interface ProfilePageTypes {
   params: { id: string };
 }
 
+export interface PostPageTypes {
+  params: { userId: string; postId: string };
+}
+
 export interface PostUserCompType {
   post: Post;
+}
+
+export interface CommentsHeaderType {
+  params: { userId: string; postId: string };
+  post: PostWithProfile;
+}
+
+export interface CommentsType {
+  params: { userId: string; postId: string };
+}
+
+export interface SingleCommentType {
+  comment: CommentWithProfile;
+  params: { userId: string; postId: string };
 }
