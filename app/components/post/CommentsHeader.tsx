@@ -90,8 +90,6 @@ export default function CommentsHeader({ post, params }: CommentsHeaderType) {
           like.post_id == params.postId
         ) {
           unlike(like.id);
-          console.log(like);
-          console.log("kesini dia");
         }
       });
     }
