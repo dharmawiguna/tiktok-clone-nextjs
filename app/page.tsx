@@ -1,27 +1,27 @@
+"use client";
+
+import React from "react";
+import { useEffect } from "react";
 import ClientOnly from "./components/ClientOnly";
 import PostMain from "./components/PostMain";
 import MainLayout from "./layouts/MainLayout";
+import { usePostStore } from "./stores/post";
 
 export default function Home() {
+  let { allPost, setAllPosts } = usePostStore();
+
+  useEffect(() => {
+    setAllPosts();
+  }, []);
+
   return (
     <>
       <MainLayout>
         <div className="mt-[80px] w-[calc(100%-90px)] max-w-[690px] ml-auto">
           <ClientOnly>
-            <PostMain
-              post={{
-                id: "124",
-                user_id: "456",
-                video_url: "/dog.mp4",
-                text: "this is some text",
-                created_at: "date here",
-                profile: {
-                  user_id: "456",
-                  name: "user 1",
-                  image: "https://placehold.co/100",
-                },
-              }}
-            />
+            {allPost.map((post, index) => (
+              <PostMain key={index} post={post} />
+            ))}
           </ClientOnly>
         </div>
       </MainLayout>

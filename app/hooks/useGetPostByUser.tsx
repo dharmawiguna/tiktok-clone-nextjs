@@ -11,7 +11,7 @@ const useGetPostByUser = async (userId: string) => {
     const documents = response.documents;
     const result = documents.map((doc) => {
       return {
-        id: doc?.id,
+        id: doc?.$id,
         user_id: doc?.user_id,
         video_url: doc?.video_url,
         text: doc?.text,

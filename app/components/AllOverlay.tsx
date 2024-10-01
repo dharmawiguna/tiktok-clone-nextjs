@@ -1,5 +1,6 @@
 "use client";
 
+import React from "react";
 import { useGeneralStore } from "../stores/general";
 import AuthOverlay from "./AuthOverlay";
 import ClientOnly from "./ClientOnly";

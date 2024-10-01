@@ -1,10 +1,6 @@
-import { database, Query } from "@/libs/AppWriteClient";
+import { database } from "@/libs/AppWriteClient";
 
-const useUpdateProfileImage = async (
-  id: string,
-  image: string,
-  bio: string
-) => {
+const useUpdateProfileImage = async (id: string, image: string) => {
   try {
     await database.updateDocument(
       String(process.env.NEXT_PUBLIC_DATABASE_ID),

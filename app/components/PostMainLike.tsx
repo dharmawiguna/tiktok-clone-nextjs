@@ -1,5 +1,5 @@
 "use client";
-
+import React, { useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { AiFillHeart, AiOutlinePlus } from "react-icons/ai";
@@ -7,17 +7,97 @@ import { BiLoaderCircle } from "react-icons/bi";
 import { FaCommentDots, FaShare } from "react-icons/fa";
 import { RiShareForwardFill } from "react-icons/ri";
 import { Like, PostMainLikesCompType, Comment } from "../types";
+import { useGeneralStore } from "../stores/general";
+import { useUser } from "../context/user";
+import useGetLikesByPostId from "../hooks/useGetLikesByPostId";
+import useGetCommentByPostId from "../hooks/useGetCommentByPostId";
+import useIsLiked from "../hooks/useIsLiked";
+import useCreateLike from "../hooks/useCreateLike";
+import useDeleteLike from "../hooks/useDeleteLike";
+import useCreateBucketUrl from "../hooks/useCreateBucketUrl";
 
 export default function PostMainLike({ post }: PostMainLikesCompType) {
+  let { setIsLoginOpen } = useGeneralStore();
+
+  const contextUser = useUser();
   const [hasClickedLike, setHasClikedLike] = useState<boolean>(false);
   const [userLiked, setUserLiked] = useState<boolean>(false);
   const [likes, setLikes] = useState<Like[]>([]);
-  const [comments, setComments] = useState<Comment[]>([]);
+  const [comments, setComments] = useState<Comment[] | undefined>([]);
 
   const router = useRouter();
 
+  useEffect(() => {
+    getAllLikeByPost();
+    getAllCommentByPost();
+  }, [post]);
+
+  useEffect(() => {
+    hasUserLikedPost();
+  }, [likes, contextUser]);
+
+  const getAllLikeByPost = async () => {
+    let result = await useGetLikesByPostId(post?.id);
+    setLikes(result);
+  };
+
+  const getAllCommentByPost = async () => {
+    let result = await useGetCommentByPostId(post?.id);
+    setComments(result);
+  };
+
+  const hasUserLikedPost = () => {
+    if (!contextUser) return;
+    if (likes?.length < 1 || !contextUser?.user?.id) {
+      setUserLiked(false);
+      return;
+    }
+
+    let res = useIsLiked(contextUser?.user.id, post?.id, likes);
+    setUserLiked(res ? true : false);
+  };
+
+  const like = async () => {
+    try {
+      setHasClikedLike(true);
+      await useCreateLike(contextUser?.user?.id || "", post.id);
+      await getAllLikeByPost();
+      hasUserLikedPost();
+      setHasClikedLike(false);
+    } catch (error) {
+      alert(error);
+    }
+  };
+
+  const unlike = async (id: string) => {
+    try {
+      setHasClikedLike(true);
+      await useDeleteLike(id);
+      await getAllLikeByPost();
+      hasUserLikedPost();
+      setHasClikedLike(false);
+    } catch (error) {
+      alert(error);
+    }
+  };
+
   const likeOrUnlike = () => {
-    setUserLiked(true);
+    if (!contextUser?.user) return setIsLoginOpen(true);
+
+    let res = useIsLiked(contextUser.user.id, post?.id, likes);
+    if (!res) {
+      like();
+    } else {
+      likes.forEach((like) => {
+        if (
+          contextUser?.user?.id &&
+          contextUser.user.id == like.user_id &&
+          like.post_id == post?.id
+        ) {
+          unlike(like.id);
+        }
+      });
+    }
   };
   return (
     <>
@@ -25,7 +105,7 @@ export default function PostMainLike({ post }: PostMainLikesCompType) {
         <div className="absolute bottom-0 pl-2">
           <div className="pb-4 cursor-pointer">
             <img
-              src={post.profile.image}
+              src={useCreateBucketUrl(post.profile.image)}
               alt=""
               className="rounded-full max-h-[60px]"
               width={60}

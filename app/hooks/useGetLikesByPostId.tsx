@@ -11,7 +11,7 @@ const useGetLikesByPostId = async (postId: string) => {
     const documents = response.documents;
     const result = documents.map((doc) => {
       return {
-        id: doc?.id,
+        id: doc?.$id,
         user_id: doc?.user_id,
         post_id: doc?.post_id,
       };

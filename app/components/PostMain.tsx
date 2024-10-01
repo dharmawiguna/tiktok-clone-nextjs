@@ -1,11 +1,12 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import { PostMainCompType } from "../types";
 import Link from "next/link";
 import { AiFillHeart } from "react-icons/ai";
 import { ImMusic } from "react-icons/im";
 import PostMainLike from "./PostMainLike";
+import useCreateBucketUrl from "../hooks/useCreateBucketUrl";
 
 export default function PostMain({ post }: PostMainCompType) {
   useEffect(() => {
@@ -66,7 +67,7 @@ export default function PostMain({ post }: PostMainCompType) {
           <div className="mt-2.5 flex">
             <div className="relative min-h-[480px] max-h-[880px] max-w-[300px] flex items-center bg-black rounded-xl cursor-pointer">
               <video
-                src={post.video_url}
+                src={useCreateBucketUrl(post.video_url)}
                 id={`video-${post.id}`}
                 loop
                 controls

@@ -1,4 +1,4 @@
-import { database, Query } from "@/libs/AppWriteClient";
+import { database } from "@/libs/AppWriteClient";
 
 const useUpdateProfile = async (id: string, name: string, bio: string) => {
   try {

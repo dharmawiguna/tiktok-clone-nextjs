@@ -14,7 +14,7 @@ export default function TextInput({
         type={inputType}
         placeholder={placeholder}
         className="block w-full bg-[#F1F1F2] text-gray-800 border border-gray-300 rounded-md py-2.5 px-3 focus:outline-none"
-        value={string || ""}
+        defaultValue={string || ""}
         onChange={(event) => onUpdate(event.target.value)}
       />
 
